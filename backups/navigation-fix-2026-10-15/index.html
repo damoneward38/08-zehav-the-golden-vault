@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZEHAV — The Golden Vault</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0906;--panel:#14110b;--panel2:#100d08;--border:#2b2417;--text:#f2e7cf;--dim:#a8987a;--gold:#e6b34d;--gold2:#ffd479;--amber:#c98f2e}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(1100px 560px at 50% -10%,#3a2b10 0%,var(--bg) 55%);color:var(--text);min-height:100vh}
+header{display:flex;align-items:center;gap:14px;padding:16px 26px;border-bottom:1px solid var(--border);background:rgba(11,9,6,.85);backdrop-filter:blur(9px);position:sticky;top:0;z-index:8}
+.vault{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#ffd479,#b07d23);display:grid;place-items:center;font-size:18px;box-shadow:0 0 22px #e6b34d55;flex:none}
+header h1{margin:0;font-size:17px;letter-spacing:1px}.hs{color:var(--dim);font-size:12px;margin-top:1px}
+.count{margin-left:auto;color:var(--gold);font-size:12.5px;font-weight:600}
+.wrap{max-width:1280px;margin:0 auto;padding:22px 26px 60px}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.searchbox{position:relative;flex:1;min-width:230px}
+.searchbox input{width:100%;background:#14110b;border:1px solid var(--border);color:var(--text);border-radius:12px;padding:12px 14px 12px 38px;font-size:14px;outline:none}
+.searchbox input:focus{border-color:var(--gold)}
+.searchbox svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:.5}
+.cat{display:flex;gap:8px;flex-wrap:wrap}
+.cat button{background:#14110b;border:1px solid var(--border);color:var(--dim);border-radius:20px;padding:9px 15px;font-size:12.5px;cursor:pointer;font-weight:600}
+.cat button.on{background:linear-gradient(135deg,#e6b34d,#c98f2e);color:#221703;border-color:transparent}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}}
+.ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:19px;background:var(--card,linear-gradient(135deg,#2a2213,#14110b));border:1px solid #3a3017;flex:none}
+.card{background:linear-gradient(170deg,#161206,#100d08);border:1px solid var(--border);border-radius:15px;padding:16px;cursor:pointer;transition:.16s;position:relative}
+.card:hover{transform:translateY(-3px);border-color:#7a6130;box-shadow:0 12px 30px -14px rgba(230,179,77,.35)}
+.card .tt{display:flex;gap:11px;align-items:center;margin-bottom:10px}
+.card h3{margin:0;font-size:14.5px;font-weight:700}
+.card .cat-tag{color:var(--gold);font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;margin-top:3px}
+.card p{color:var(--dim);font-size:12.5px;line-height:1.55;margin:0 0 12px;min-height:38px}
+.card .foot{display:flex;align-items:center;gap:6px;color:var(--gold);font-weight:700;font-size:12px}
+.card .foot .go{margin-left:auto;color:var(--amber)}
+.card.gold{border-color:#7a6130}
+.gem{position:absolute;right:14px;top:14px;font-size:14px;opacity:.8}
+.empty{grid-column:1/-1;text-align:center;color:#6d5f43;padding:60px 0;font-size:14px}
+.modal-bg{position:fixed;inset:0;background:rgba(5,4,2,.72);backdrop-filter:blur(5px);display:none;place-items:center;z-index:20;padding:20px}
+.modal-bg.open{display:grid}
+.modal{background:linear-gradient(170deg,#181305,#100d08);border:1px solid #7a6130;border-radius:18px;max-width:560px;width:100%;padding:26px 26px 22px;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:pop .2s ease}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+.modal .t{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.modal h2{margin:0;font-size:20px}.modal .cat-tag{color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:1.5px}
+.modal .desc{color:#d8cbae;font-size:13.5px;line-height:1.7}
+.modal .feats{display:flex;flex-wrap:wrap;gap:7px;margin:15px 0}
+.modal .feats span{background:#221a0d;border:1px solid #3f331a;color:var(--gold2);border-radius:16px;padding:5px 12px;font-size:12px}
+.modal .acts{display:flex;gap:10px;margin-top:18px}
+.modal .acts button{flex:1;border-radius:11px;padding:12px;font-weight:700;font-size:13.5px;cursor:pointer}
+.launch{background:linear-gradient(135deg,#ffd479,#c98f2e);color:#221703;border:none}
+.launch:hover{filter:brightness(1.08)}
+.close{border:1px solid #3a3017;background:transparent;color:var(--dim)}
+.close:hover{color:var(--text)}
+footer{margin-top:34px;color:#4e432a;font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="vault">🪙</div>
+  <div><h1>ZEHAV — THE GOLDEN VAULT</h1><div class="hs">Curated collection · every build shipped in gold</div></div>
+  <span class="count" id="showing"></span>
+</header>
+<div class="wrap">
+  <div class="toolbar">
+    <div class="searchbox">
+      <input id="q" placeholder="Search the vault…">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="2"/></svg>
+    </div>
+    <div class="cat" id="cats"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+<footer>ZEHAV · The Golden Vault · local collection index</footer>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="t">
+      <div class="ic" id="mIcon">⚡</div>
+      <div><h2 id="mName">App</h2><div class="cat-tag" id="mCat">Category</div></div>
+      <button class="close" style="margin-left:auto;border-radius:9px;padding:8px 13px;background:transparent;border:1px solid #3a3017;color:var(--dim);cursor:pointer" id="mX">✕</button>
+    </div>
+    <div class="desc" id="mDesc"></div>
+    <div class="feats" id="mFeats"></div>
+    <div class="acts">
+      <button class="close" id="mClose">Close</button>
+      <button class="launch" id="mLaunch">Open in vault ↗</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+  var apps=[
+    {name:"Sapphire Suite",cat:"AI Ops",icon:"💠",desc:"Orchestrator for the local AI suite — dispatch work to the best model per job via the router, watch queues, and keep the fleet honest on 8 GB of RAM. Command every skill from one console.",feats:["best-AI routing","8GB profile","skill console"],have:true},
+    {name:"OpenClaw Workbench",cat:"AI Ops",icon:"🦾",desc:"Autonomous agent harness. Supervises the scrapper, builder, verifier and mailer, streams tool output into the terminal, and reports mission exit codes.",feats:["agent supervisor","live tool streams"],have:true},
+    {name:"Phantom Sovereign",cat:"Command",icon:"⚔️",desc:"Command & ops console for covert mission coordination. Mission log, operations panels and a boot-style console readout for ground truth.",feats:["mission log","ops boards"],have:false},
+    {name:"SkyGuard",cat:"Defense",icon:"🛡️",desc:"Fleet-status dashboard styled like Kubernetes. Watch node readiness across theaters, triage alerts, and deploy intercept cells from the form.",feats:["node fleet","alert triage"],have:true},
+    {name:"Magen Raki",cat:"Defense",icon:"📡",desc:"Sky-shield radar console. Animated sweep on canvas, hostile ticks that fade in and out, per-theater shield toggles. The electron eye.",feats:["radar canvas","theater shields"],have:true},
+    {name:"Phone in Logs",cat:"Intelligence",icon:"📵",desc:"Call blocking & intelligent logs. Declare block rules by number or prefix, then watch the live feed block calls and texts as they hit the switch.",feats:["block rules","live call feed"],have:true},
+    {name:"AppForge AI",cat:"Builder",icon:"⚒️",desc:"Prompt-to-app generator. Feed a name, type and feature set — it mints a starter app shell plus ready-to-read highlighted code.",feats:["live preview","code panel"],have:true},
+    {name:"BuildMaster",cat:"Builder",icon:"🏗️",desc:"Pipeline orchestration dashboard. Kick a simulated build — lint, test, package, deploy — and watch each stage flip green in the status log.",feats:["pipeline runner","stage log"],have:true},
+    {name:"Global Hazard Hub",cat:"Intelligence",icon:"🌐",desc:"Worldwide hazard feed. Regional severity boards, event stream, filters by type and zone.",feats:["hazard feed","zone filters"],have:true},
+    {name:"Quantrade Shomer",cat:"Finance",icon:"📈",desc:"Markets watcher with guardrails. Ticker board, anomaly flags and position sleep thresholds.",feats:["tickers","guardrails"],have:true},
+    {name:"NeuroVault",cat:"Data",icon:"🧠",desc:"Knowledge vault with retrieval. Embed, index and search the corpus from a single pane.",feats:["embed+index","search"],have:true},
+    {name:"Lumina Vision",cat:"Media",icon:"🎬",desc:"Prompt-to-video staging. Storyboard cards, frame list, render queue with preview tiles.",feats:["storyboards","render queue"],have:true},
+    {name:"Daʻat Platform",cat:"Data",icon:"📚",desc:"Knowledge-workspace platform. Sources, notes, links and synthesis surfaces in one graph.",feats:["link graph","synthesis"],have:true},
+    {name:"BoneScan AI",cat:"Health",icon:"🦴",desc:"Scan-review console. Upload regions, read probability overlays, flag for review.",feats:["overlay review","flag flow"],have:true},
+    {name:"Golden Eternity Ad Maker",cat:"Media",icon:"💡",desc:"Ad creative engine. Brief in, ads out — headline, visual, hook variations racked side by side.",feats:["ad variants","brief→creative"],have:true},
+    {name:"Keira",cat:"Personal",icon:"🎙️",desc:"Voice companion. Conversation memory, wake-word list, mood board.",feats:["memory","voice"],have:true},
+    {name:"The Anunnaki Bag",cat:"Mystery",icon:"🏺",desc:"The Bag demystified. Logs, keys and translations hidden in plain sight across the archives.",feats:["translations","archive maps"],have:true},
+    {name:"Neshimat Chayyim",cat:"Health",icon:"🫁",desc:"Breath lifecycle tracker. Patterns, inspiratory reserve, daily totals charted.",feats:["pattern charts","totals"],have:true},
+    {name:"Da‛at & Emet Platform",cat:"Data",icon:"⚖️",desc:"Truths and knowledge knit together — source, verify, surface.",feats:["verification","knowledge"],have:true},
+    {name:"Tzofeh",cat:"Intelligence",icon:"👁️",desc:"The lookout. Peers at feeds and flags anomalies early.",feats:["watchers","flags"],have:true}
+  ];
+  var categories=["All"].concat(Array.from(new Set(apps.map(function(a){return a.cat})).values()));
+  var state={cat:"All",q:""};
+  function card(a){
+    return '<div class="card" data-n="'+esc(a.name)+'">'+(a.have?'<span class="gem">🟡</span>':'<span class="gem">◐</span>')+''
+      +'<div class="tt"><div class="ic">'+a.icon+'</div><div><h3>'+esc(a.name)+'</h3><div class="cat-tag">'+esc(a.cat)+'</div></div></div>'
+      +'<p>'+esc(a.desc)+'</p><div class="foot"><span style="color:var(--gold)">'+(a.have?"Gold certified":"Archived")+'</span>'
+      +'<span style="color:var(--dim)">'+a.feats.slice(0,2).join(" · ")+'</span><span class="go">open →</span></div></div>';
+  }
+  function renderCats(){
+    var box=document.getElementById("cats");
+    box.innerHTML=categories.map(function(c){
+      return '<button data-c="'+esc(c)+'" class="'+(state.cat===c?"on":"")+'">'+esc(c)+'</button>';
+    }).join("");
+    box.querySelectorAll("button").forEach(function(b){b.onclick=function(){state.cat=b.dataset.c;
+
+      renderCats();renderGrid()}});
+  }
+  function renderGrid(){
+    var q=state.q.trim().toLowerCase();
+    var sel=apps.filter(function(a){
+      if(state.cat!=="All"&&a.cat!==state.cat)return false;
+      if(q&&(a.name+" "+a.cat+" "+a.desc+" "+a.feats.join(" ")).toLowerCase().indexOf(q)===-1)return false;
+      return true;
+    });
+    document.getElementById("showing").textContent=sel.length+" of "+apps.length+" items";
+    var g=document.getElementById("grid");
+    if(!sel.length){g.innerHTML='<div class="empty">Nothing in the vault matches that search.<br>Try “AI”, “shield”, or “builder”.</div>';return}
+    g.innerHTML=sel.map(card).join("");
+    g.querySelectorAll(".card").forEach(function(c){c.onclick=function(){open(apps.find(function(a){return a.name===c.dataset.n}))}});
+  }
+  function open(a){
+    document.getElementById("mIcon").textContent=a.icon;
+    document.getElementById("mIcon").style.background="linear-gradient(135deg,#2a2213,#14110b)";
+    document.getElementById("mName").textContent=a.name;
+    document.getElementById("mCat").textContent=a.cat+" · "+(a.have?"in vault":"archived");
+    document.getElementById("mDesc").textContent=a.desc;
+    document.getElementById("mFeats").innerHTML=a.feats.map(function(f){return "<span>"+esc(f)+"</span>"}).join("");
+    var bg=document.getElementById("modalBg");
+    bg.classList.add("open");
+    document.getElementById("mLaunch").onclick=function(){
+      window.open("https://aistudio.google.com/apps","_blank");
+    };
+  }
+  function close(){document.getElementById("modalBg").classList.remove("open")}
+  document.getElementById("mX").onclick=close;
+  document.getElementById("mClose").onclick=close;
+  document.getElementById("modalBg").addEventListener("click",function(ev){if(ev.target===this)close()});
+  document.getElementById("q").addEventListener("input",function(ev){state.q=ev.target.value;renderGrid()});
+  document.addEventListener("keydown",function(ev){if(ev.key==="Escape")close()});
+  renderCats();
+  renderGrid();
+})();
+</script>
+</body>
+</html>
